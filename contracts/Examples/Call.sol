@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: None
 
-pragma solidity ^0.8.13;
+pragma solidity ^0.8.9;
 
 contract TestCall{
     string public message;
@@ -23,7 +23,9 @@ contract Call{
 
     /* Need to deploy TestCall contract, and then pass address to callFoo */
     function callFoo(address _testContractAddress) external payable{
-        (bool success, bytes memory _data) = _testContractAddress.call{value:111}(abi.encodeWithSignature("foo(string,uint256)","call foo",123));
+        (bool success, bytes memory _data) = _testContractAddress.call{value:111}(
+            abi.encodeWithSignature("foo(string,uint256)","call foo",123)
+            );
         require(success, "Call failed");
         data=_data;
     }

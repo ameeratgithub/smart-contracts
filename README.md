@@ -8,6 +8,7 @@ basic ideas to implement DApps. For example
 - 'DutchAuction' is where price of the nft decreases by time, to a certain limit
 - 'AccessControl' is where you want to define custom roles in your smart contract
 - 'Kill' shows example of deleting smart contract. Surprised? :)
+- 'HTLC (Hash TimeLocked Contract)' can swap cross chain tokens via atomic swap
 
 
 I tried to use best practices in these examples. More examples are on the way :)

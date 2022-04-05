@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: None
 
-pragma solidity ^0.8.13;
+pragma solidity ^0.8.9;
 
 interface IERC721{
     function transferFrom(address _from, address _to, uint _nftId) external;
@@ -8,12 +8,14 @@ interface IERC721{
 
 /* 
 
-    Dutch Auction is concept where price decreases gradually as time passes, to a certain limit. This is auction for only 1 nft.
-    We can use a factory/collection contract to deploy each auction, or just inhance it's functionality to support multiple nfts
+    Dutch Auction is concept where price decreases gradually as time passes, to a certain limit.
+    This is auction for only 1 nft. We can use a factory/collection contract to deploy each auction,
+    or just inhance it's functionality to support multiple nfts
 
     ****************  TESTING  ********************
     1. Deploy Nft.sol -> 2. Mint Nft  (i.e. _tokenId=999) -> 3. Deploy DuctionAuction.sol -> 
-    4. Approve address of DuctchAction.sol by calling Nft.approve, and passing them address of dutchauction.sol and tokenId (999)
+    4. Approve address of DuctchAction.sol by calling Nft.approve, and passing them address
+    of dutchauction.sol and tokenId (999)
     5. Get the price of nft in auction -> 6. Send some wei/ethers to buy NFT
     7. Verify if buyer is same while calling Nft.ownerOf(999)
 
