@@ -2,6 +2,7 @@
 
 pragma solidity ^0.8.9;
 import {IERC20} from "./ERC720.sol";
+import {Math} from "./Math.sol";
 
 interface IVoter {
     event Contributed(address indexed _contributor, uint256 _amount);
@@ -12,9 +13,15 @@ interface IVoter {
 
     function vote(
         address _voter,
-        uint256 _proposalId,
-        address _governor
-    ) external returns (bool, uint256);
+        // uint256 _proposalId,
+        address _governor,
+        uint256 _amount
+    )
+        external
+        returns (
+            bool,
+            uint256
+        );
 
     function voterBalance(address _voter) external view returns (uint256);
 }
@@ -26,7 +33,7 @@ contract Voter is IVoter {
     address[] private _votersList;
 
     // Proposal ID -> Voter -> Number of Votes
-    mapping(uint256 => mapping(address => uint256)) private _proposalVotes;
+    // mapping(uint256 => mapping(address => uint256)) private _proposalVotes;
 
     IERC20 private _token;
 
@@ -80,33 +87,32 @@ contract Voter is IVoter {
 
     function vote(
         address _voter,
-        uint256 _proposalId,
-        address _governor
-    ) external returns (bool, uint256) {
-        // Incrementing votes by 1 to apply quadratic formula, since 0**n will be zero
-        uint256 voteFactor = _proposalVotes[_proposalId][_voter] + 1;
-
-        /*
-         1 Vote = 100 Tokens
-         2 Votes =  400 Tokens  
-         3 Votes = 900 Tokens 
-        */
-
-        uint256 amount = (voteFactor**2) * 100;
-
+        // uint256 _proposalId,
+        address _governor,
+        uint256 _amount
+    )
+        external
+        returns (
+            bool,
+            uint256
+        )
+    {
+        require(_amount > 0, "Voter::vote: Invalid amount");
         require(
-            _votersBalance[_voter] >= amount,
+            _votersBalance[_voter] >= _amount,
             "Voter: Insufficient balance to vote"
         );
 
         require(
-            _transferToGovernor(_governor, amount),
+            _transferToGovernor(_governor, _amount),
             "Voter: Unable to transfer vote balance"
         );
 
-        _votersBalance[_voter] -= amount;
+        uint256 votingPower = _amount * Math.sqrt(_amount);
 
-        return (true, amount);
+        _votersBalance[_voter] -= _amount;
+
+        return (true, votingPower);
     }
 
     function _transferToGovernor(address _governor, uint256 _amount)

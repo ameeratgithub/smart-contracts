@@ -4,7 +4,12 @@ pragma solidity ^0.8.9;
 import {IVoter} from "./Voter.sol";
 
 interface IGovernor {
-    event Voted(address _voter, uint256 _proposalId, uint256 _amount);
+    event Voted(
+        address _voter,
+        uint256 _proposalId,
+        uint256 _amount,
+        uint256 _votingPower
+    );
 
     event ProposalCreated(address _creator, uint256 _proposalId);
 
@@ -27,9 +32,8 @@ contract Governor is IGovernor {
         ProposalState state;
         uint32 startedAt;
         uint32 endsAt;
-        uint32 votes;
-        uint32 forVotes;
-        uint32 againstVotes;
+        uint256 forVotes;
+        uint256 againstVotes;
         mapping(address => bool) voted;
         mapping(address => bool) forVoted;
         address[] voters;
@@ -130,39 +134,43 @@ contract Governor is IGovernor {
         return true;
     }
 
-    function vote(uint256 _proposalId, bool _for)
+    function vote(
+        uint256 _proposalId,
+        bool _for,
+        uint256 _amount
+    )
         external
         proposalExists(_proposalId)
         proposalStarted(_proposalId)
         notEnded(_proposalId)
-        
         returns (bool)
     {
-        (bool success, uint256 amount) = _voterContract.vote(
+        Proposal storage proposal = _proposals[_proposalId];
+
+        require(
+            !proposal.voted[msg.sender],
+            "Governor::vote: User already voted"
+        );
+
+        (bool success, uint256 votingPower) = _voterContract.vote(
             msg.sender,
-            _proposalId,
-            address(this)
+            address(this),
+            _amount
         );
 
         require(success, "Governor: Error while voting");
 
-        Proposal storage proposal = _proposals[_proposalId];
+        proposal.voters.push(msg.sender);
+        proposal.voted[msg.sender] = true;
 
-        proposal.votes++;
-
-        if (!proposal.voted[msg.sender]) {
-            proposal.voters.push(msg.sender);
-            proposal.voted[msg.sender] = true;
-        }
         if (_for) {
+            proposal.forVotes += votingPower;
             proposal.forVoted[msg.sender] = true;
-            proposal.forVotes++;
         } else {
-            proposal.forVoted[msg.sender] = false;
-            proposal.againstVotes++;
+            proposal.againstVotes += votingPower;
         }
 
-        emit Voted(msg.sender, _proposalId, amount);
+        emit Voted(msg.sender, _proposalId, _amount, votingPower);
 
         return true;
     }
@@ -189,9 +197,9 @@ contract Governor is IGovernor {
         view
         returns (bool)
     {
-        uint256 forVotes = (_proposal.forVotes * 100) / _proposal.votes;
-        uint256 againstVotes = (_proposal.againstVotes * 100) / _proposal.votes;
-
+        uint256 totalVotes = _proposal.forVotes + _proposal.againstVotes;
+        uint256 forVotes = (_proposal.forVotes * 100) / totalVotes;
+        uint256 againstVotes = (_proposal.againstVotes * 100) / totalVotes;
         return (forVotes - againstVotes) >= 10;
     }
 }
