@@ -16,12 +16,7 @@ interface IVoter {
         // uint256 _proposalId,
         address _governor,
         uint256 _amount
-    )
-        external
-        returns (
-            bool,
-            uint256
-        );
+    ) external returns (bool, uint256);
 
     function voterBalance(address _voter) external view returns (uint256);
 }
@@ -90,27 +85,21 @@ contract Voter is IVoter {
         // uint256 _proposalId,
         address _governor,
         uint256 _amount
-    )
-        external
-        returns (
-            bool,
-            uint256
-        )
-    {
+    ) external returns (bool, uint256) {
         require(_amount > 0, "Voter::vote: Invalid amount");
         require(
             _votersBalance[_voter] >= _amount,
             "Voter: Insufficient balance to vote"
         );
 
+        uint256 votingPower = _amount * Math.sqrt(_amount);
+
+        _votersBalance[_voter] -= _amount;
+        
         require(
             _transferToGovernor(_governor, _amount),
             "Voter: Unable to transfer vote balance"
         );
-
-        uint256 votingPower = _amount * Math.sqrt(_amount);
-
-        _votersBalance[_voter] -= _amount;
 
         return (true, votingPower);
     }
