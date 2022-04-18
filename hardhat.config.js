@@ -2,6 +2,11 @@ require("@nomiclabs/hardhat-waffle");
 require("solidity-coverage")
 require("hardhat-gas-reporter")
 
+/* For smart contracts upgrades */
+
+require("@nomiclabs/hardhat-ethers")
+require("@openzeppelin/hardhat-upgrades")
+
 require("dotenv").config();
 
 // This is a sample Hardhat task. To learn how to create your own go to
@@ -30,11 +35,15 @@ module.exports = {
       },
     },
   },
-  networks:{
-    hardhat: {
-      forking:{
-        url: `https://mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
-      }
-    }
-  }
+  paths:{
+    // sources:"./contracts" // default
+    sources:"./contracts/examples/Upgradables"
+  },
+  // networks:{
+  //   hardhat: {
+  //     forking:{
+  //       url: `https://mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
+  //     }
+  //   }
+  // }
 };
