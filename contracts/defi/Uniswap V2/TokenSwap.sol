@@ -3,7 +3,7 @@
 pragma solidity ^0.8.9;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import {IUniswapV2Router} from "./IUniswapV2Router.sol";
+import "./IUniswap.sol";
 
 contract TokenSwap {
     address private constant UNISWAP_V2_ROUTER =

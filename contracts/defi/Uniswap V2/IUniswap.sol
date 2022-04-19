@@ -2,6 +2,12 @@
 
 pragma solidity ^0.8.9;
 
+interface IUniswapV2Factory {
+    function getPair(address _tokenA, address _tokenB)
+        external
+        returns (address);
+}
+
 interface IUniswapV2Router {
     function swapExactTokensForTokens(
         uint256 amountIn,
@@ -37,4 +43,26 @@ interface IUniswapV2Router {
         address _to,
         uint256 _deadline
     ) external returns (uint256 amountA, uint256 amountB);
+}
+
+interface IUniswapV2Pair {
+    function token0() external view returns (address);
+
+    function token1() external view returns (address);
+
+    function getReserves()
+        external
+        view
+        returns (
+            uint112 reserve0,
+            uint112 reserve1,
+            uint32 blockTimestampLast
+        );
+
+    function swap(
+        uint256 amount0Out,
+        uint256 amount1Out,
+        address to,
+        bytes calldata data
+    ) external;
 }

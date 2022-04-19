@@ -3,8 +3,7 @@
 pragma solidity ^0.8.9;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "./IUniswapV2Router.sol";
-import "./IUniswapV2Factory.sol";
+import "./IUniswap.sol";
 
 contract Liquidity {
     address private constant FACTORY =
