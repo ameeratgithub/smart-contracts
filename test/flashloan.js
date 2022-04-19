@@ -2,7 +2,7 @@ const { expect } = require("chai");
 const { network, ethers } = require("hardhat");
 const IERC20 = require('../artifacts/@openzeppelin/contracts/token/ERC20/IERC20.sol/IERC20.json');
 
-const {USDC, USDC_WHALE} = require('../config')
+const { USDC, USDC_WHALE } = require('../config')
 
 
 describe.only("FlashLoan", function () {
@@ -12,16 +12,26 @@ describe.only("FlashLoan", function () {
 
   const DECIMALS = 6
 
-  const FUND_AMOUNT = new ethers.BigNumber.from(10**DECIMALS).mul(2000)
-  const BORROW_AMOUNT = new ethers.BigNumber.from(10**DECIMALS).mul(1000)
+  const FUND_AMOUNT = new ethers.BigNumber.from(10 ** DECIMALS).mul(2000)
+  const BORROW_AMOUNT = new ethers.BigNumber.from(10 ** DECIMALS).mul(1000)
 
-  const LENDING_POOL_ADDRESS_PROVIDER  = "0xB53C1a33016B2DC2fF3653530bfF1848a515c8c5"
+  const LENDING_POOL_ADDRESS_PROVIDER = "0xB53C1a33016B2DC2fF3653530bfF1848a515c8c5"
 
   let flashLoan
-  let token, signer
+  let token, signer, whaleSigner
 
 
-  beforeEach(async()=>{
+  beforeEach(async () => {
+
+    await network.provider.request({
+      method: 'hardhat_impersonateAccount',
+      params: [WHALE]
+    })
+
+    whaleSigner = await ethers.getSigner(WHALE);
+
+    console.log(`Whale signer address is ${whaleSigner.address}`)
+
     token = await ethers.getContractAtFromArtifact(IERC20, TOKEN_BORROW)
     const FlashLoan = await ethers.getContractFactory('FlashLoan');
     flashLoan = await FlashLoan.deploy(LENDING_POOL_ADDRESS_PROVIDER)
@@ -36,6 +46,12 @@ describe.only("FlashLoan", function () {
       value: ethers.utils.parseEther("1")
     })
 
+    const txReciept = await tx.wait(1)
+
+    console.log(txReciept.logs)
+
+
+
     const balance = await token.balanceOf(WHALE)
 
     console.log(balance.toString())
@@ -43,25 +59,25 @@ describe.only("FlashLoan", function () {
     // Balance should be more than given FUND AMOUNT
     expect(balance.gte(FUND_AMOUNT)).to.be.true
 
-    // await token.transfer(flashLoan.address, FUND_AMOUNT)
+    // Transfer enough tokens to cover loan fee
+    await token.connect(whaleSigner).transfer(flashLoan.address, FUND_AMOUNT)
 
   })
-    
-  it("Deploy the smart contract", async function () {
-    // await network.provider.request({
-    //   method: 'hardhat_impersonateAccount',
-    //   params: [DAI_WHALE]
-    // })
 
-    // const signer= await ethers.getSigner(DAI_WHALE);
-    
+  it("Executes flashloan", async function () {
+    const tx = await flashLoan.connect(whaleSigner).flashLoan(token.address, BORROW_AMOUNT)
+    await tx.wait(1)
+    let logsCount = 0;
+    return new Promise(function (resolve) {
+      flashLoan.on('Log', (message, value) => {
+        logsCount++;
+        console.log(message, value.toString())
+        if (logsCount == 2) {
+          resolve();
+        }
+      })
+    })
 
-    // const TokenSwap = new ethers.ContractFactory(TokenSwapInterface.abi,TokenSwapInterface.bytecode, signer);
-
-    
-    // const tokenSwap = await TokenSwap.deploy();
-    
-    // await tokenSwap.deployed();
 
   });
 });
