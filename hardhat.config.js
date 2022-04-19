@@ -38,7 +38,8 @@ module.exports = {
   paths:{
     // sources:"./contracts", // default
     // sources:"./contracts/examples/Upgradables",
-    sources:"./contracts/defi/Aave",
+    // sources:"./contracts/defi/Aave",
+    sources:"./contracts/defi/Uniswap V2",
   },
   networks:{
     hardhat: {
