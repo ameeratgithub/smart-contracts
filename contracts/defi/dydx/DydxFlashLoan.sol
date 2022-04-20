@@ -45,7 +45,7 @@ contract DydxFlashLoan is ICallee, DydxFlashloanBase {
         actions[1] = _getCallAction(
             abi.encode(MyCustomData({token: _token, repayAmount: repayAmount}))
         );
-        actions[2] = _getDepositAction(marketId, _amount);
+        actions[2] = _getDepositAction(marketId, repayAmount);
 
         Account.Info[] memory accounts = new Account.Info[](1);
         accounts[0] = _getAccountInfo();
@@ -55,8 +55,8 @@ contract DydxFlashLoan is ICallee, DydxFlashloanBase {
 
     function callFunction(
         address sender,
-        Account.Info memory account,
-        bytes memory data
+        Account.Info calldata account,
+        bytes calldata data
     ) public {
         require(msg.sender == SOLO, "Invalid caller");
         require(sender == address(this), "Invalid initiator");
