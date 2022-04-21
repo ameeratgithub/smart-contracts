@@ -5,7 +5,7 @@ const IERC20 = require('../artifacts/@openzeppelin/contracts/token/ERC20/IERC20.
 const { USDC, USDC_WHALE } = require('../config')
 
 
-describe.only("FlashLoan", function () {
+describe("FlashLoan", function () {
 
   const WHALE = USDC_WHALE
   const TOKEN_BORROW = USDC

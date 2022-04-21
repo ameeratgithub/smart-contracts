@@ -38,8 +38,7 @@ module.exports = {
   paths:{
     // sources:"./contracts", // default
     // sources:"./contracts/examples/Upgradables",
-    // sources:"./contracts/defi/Aave",
-    sources:"./contracts/defi/dydx",
+    sources:"./contracts/defi/Weth",
   },
   networks:{
     hardhat: {
