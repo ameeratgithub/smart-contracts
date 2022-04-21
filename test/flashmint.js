@@ -5,7 +5,7 @@ const IERC20 = require('../artifacts/@openzeppelin/contracts/token/ERC20/IERC20.
 const { WETH_10 } = require('../config')
 
 
-describe.only("FlashMint", function () {
+describe("FlashMint", function () {
 
   let flashMint
   let weth

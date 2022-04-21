@@ -5,6 +5,7 @@ const IERC20 = require('../artifacts/@openzeppelin/contracts/token/ERC20/IERC20.
 const { USDC, USDC_WHALE } = require('../config')
 
 
+
 describe("FlashSwap", function () {
 
   const WHALE = USDC_WHALE
@@ -12,7 +13,7 @@ describe("FlashSwap", function () {
 
   const DECIMALS = 6
 
-  const FUND_AMOUNT = new ethers.BigNumber.from(10 ** DECIMALS).mul(2*10e3)
+  const FUND_AMOUNT = new ethers.BigNumber.from(10 ** DECIMALS).mul(2 * 10e3)
   const BORROW_AMOUNT = new ethers.BigNumber.from(10 ** DECIMALS).mul(10e3)
 
   let flashSwap

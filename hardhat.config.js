@@ -8,6 +8,9 @@ require("@nomiclabs/hardhat-ethers")
 require("@openzeppelin/hardhat-upgrades")
 
 require("dotenv").config();
+require("@openzeppelin/test-helpers/configure")({
+  provider: `https://eth-mainnet.alchemyapi.io/v2/${process.env.ALCHEMY_API_KEY}`
+})
 
 // This is a sample Hardhat task. To learn how to create your own go to
 // https://hardhat.org/guides/create-task.html
@@ -35,14 +38,14 @@ module.exports = {
       },
     },
   },
-  paths:{
+  paths: {
     // sources:"./contracts", // default
     // sources:"./contracts/examples/Upgradables",
-    sources:"./contracts/defi/Compound",
+    sources: "./contracts/defi/Compound",
   },
-  networks:{
+  networks: {
     hardhat: {
-      forking:{
+      forking: {
         // url: `https://mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
         url: `https://eth-mainnet.alchemyapi.io/v2/${process.env.ALCHEMY_API_KEY}`
       }
