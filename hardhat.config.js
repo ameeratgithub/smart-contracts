@@ -40,16 +40,16 @@ module.exports = {
   },
   paths: {
     // sources:"./contracts", // default
-    // sources:"./contracts/examples/Upgradables",
-    sources: "./contracts/defi/Compound",
+    sources:"./contracts/examples",
+    // sources: "./contracts/defi/Compound",
   },
   networks: {
-    hardhat: {
-      forking: {
-        // url: `https://mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
-        url: `https://eth-mainnet.alchemyapi.io/v2/${process.env.ALCHEMY_API_KEY}`
-      }
-    }
+    // hardhat: {
+    //   forking: {
+    //     // url: `https://mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
+    //     url: `https://eth-mainnet.alchemyapi.io/v2/${process.env.ALCHEMY_API_KEY}`
+    //   }
+    // }
   },
   mocha: {
     timeout: 400000

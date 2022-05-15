@@ -55,5 +55,11 @@ contract CompoundERC20 {
     function redeem(uint256 _cTokenAmount) external {
         require(cToken.redeem(_cTokenAmount) == 0, "Redeem failed");
     }
+
+    Comptroller public comptroller =
+        Comptroller(0x3d9819210A31b4961b30EF54bE2aeD79B9c9Cd3B);
+
+    PriceFeed public priceFeed =
+        PriceFeed(0x922018674c12a7F0D394ebEEf9B58F186CdE13c1);
     
 }

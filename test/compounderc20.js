@@ -8,7 +8,7 @@ const { WBTC_WHALE, WBTC, CWBTC } = require('../config')
 
 const DEPOSIT_AMOUNT = new ethers.BigNumber.from(10 ** 8)
 
-describe.only("compounderc20", function () {
+describe("compounderc20", function () {
 
     const WHALE = WBTC_WHALE
     const TOKEN = WBTC
@@ -59,7 +59,7 @@ describe.only("compounderc20", function () {
         }
     }
 
-    it("Should supply and redeem", async function () {
+    xit("Should supply and redeem", async function () {
 
         await token.connect(whaleSigner).approve(compound.address, DEPOSIT_AMOUNT)
         await compound.connect(whaleSigner).supply(DEPOSIT_AMOUNT)
